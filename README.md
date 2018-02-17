@@ -4,16 +4,17 @@
 ===
 <center>
 
-## Функциональное программирование для рубистов в Elixir.
+## Функциональное программирование в Elixir.
 
 ###### Вольдэмар Дулецкий ( [@r00takaspin](https://github.com/r00takaspin) ), компания [Evrone](http://evrone.com)
 
 </center>
 
+
 ---
 # |> Roadmap
 * Вводная в Elixir/Erlang
-* Примеры кода из реального проекта, параллели с Rails
+* Примеры кода из реального проекта
 * Великий и могучий OTP :fire:
 * Полезный инструментарий: dialyzer, exunit, dogma
 * Область применения: где стоит использовать, а где совсем не стоит
@@ -230,6 +231,45 @@ end
 ```
 ###### if, case, for - это тоже функции
 ---
+# |> METAPROGRAMMING 
+<center>
+
+<img src="img/metaprogramming.jpg" alt="Drawing" style="width: 90%;"/>
+
+</center>
+
+
+---
+
+# |> Пример матчера для ExUnit
+
+```elixir
+defmodule M3.Matchers.Change do
+  ...
+  defmacro changes(action, [from: from, to: to] = params, do: block) do
+    quote do
+      [from: from, to: to] = [unquote_splicing(params)]
+      before = unquote(block)
+      assert before == from
+      unquote(action)
+      after_ = unquote(block)
+      assert to == after_
+    end
+  end
+end
+
+# пример использования
+
+visitor
+|> Complaints.create(post, @complaint_params)
+|> changes from: [post.id], to: [] do
+   visitor |> Posts.search() |> Enum.map(& &1.id)
+ end
+
+```
+
+
+---
 
 # |> Пример построения и сложного SQL запроса на ruby
 ```ruby
@@ -307,7 +347,6 @@ class CreateOrder
   attr_reader :publisher, :articles, :default_doi_price
 end
 ```
-###### *привет cyberdoi
 
 ---
 
@@ -334,12 +373,11 @@ defmodule CreateSearch do
 end
 
 ```
-###### *привет ma3ka
 
 ---
 
 # |> router.ex
-Просто приер хорошего DSL:
+Просто пример хорошего DSL:
 
 ```elixir
 defmodule M3.API.Router do
@@ -375,7 +413,7 @@ end
 * более правильна архитекрура, запросы проходят за миллисикунды
 # |> Но
 - язык очень молодой, многие фичи могут быстро появляться и исчезать, проект нужно постоянно апдейтить
-- более сложная схема деплоя, как это на самом деле работает  лучше узнать у [Димы Воротилина](https://github.com/route)
+- более сложная схема деплоя
 ---
 
 |> И это только начало, да здравствует OTP :zap:
@@ -493,4 +531,4 @@ end
 ---
 # ВОПРОСЫ
 
-###### ссылка на презентацию: [https://github.com/r00takaspin/elixir-local-meetup-18.04.2018](https://github.com/r00takaspin/elixir-local-meetup-18.04.2018)
+###### ссылка на презентацию: [https://github.com/r00takaspin/gdg-meetup-17.02.2018](https://github.com/r00takaspin/gdg-meetup-17.02.2018)
